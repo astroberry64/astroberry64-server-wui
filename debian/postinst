@@ -1,5 +1,5 @@
 #!/bin/bash
-# postinst script for astroberry-server-wui
+# postinst script for astroberry64-server-wui
 
 # set password for VNC remote desktop
 if [ "$1" = "configure" ] && [ ! -e /root/.vnc/config.d/vncserver-x11 ] && [ -z "$(grep '^Password=ce77cd632e94ca19845f7deae77a1828$' /root/.vnc/config.d/vncserver-x11)" ]; then

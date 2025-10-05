@@ -1,5 +1,5 @@
 #!/bin/bash
-# postrm script for astroberry-server-wui
+# postrm script for astroberry64-server-wui
 
 # disable astroberry site
 if [ "$1" = "remove" -o "$1" = "purge" ] && [ -e /etc/nginx/sites-enabled/astroberry ]; then

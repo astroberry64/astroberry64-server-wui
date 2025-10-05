@@ -1,5 +1,5 @@
 #!/bin/bash
-# prerm script for astroberry-server-wui
+# prerm script for astroberry64-server-wui
 
 if [ "$1" = "remove" -o "$1" = "purge" ]
 then

@@ -1,59 +1,69 @@
-astroberry-server-wui (2.0.9) buster; urgency=medium
+astroberry64-server-wui (2.0.9-astroberry64.1) bookworm; urgency=medium
+
+  * Initial Astroberry64 migration for 64-bit Raspberry Pi OS
+  * Forked from Radek Kaczorek's Astroberry Server
+  * Renamed from 2.0.9
+  * Target: Debian Bookworm (64-bit) for Raspberry Pi 4/5
+  * Radek: We hope you'll join the Astroberry64 team!
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Sun, 05 Oct 2025 21:59:45 +0200
+
+astroberry-server-wui (2.0.9) bookworm; urgency=medium
 
   * Sync with upstream
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Mon, 15 Aug 2022 13:17:00 +0000
 
-astroberry-server-wui (2.0.8) buster; urgency=medium
+astroberry-server-wui (2.0.8) bookworm; urgency=medium
 
   * Minor WUI adjustments
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Tue, 12 Oct 2021 01:53:50 +0200
 
-astroberry-server-wui (2.0.7) buster; urgency=medium
+astroberry-server-wui (2.0.7) bookworm; urgency=medium
 
   * Using own INDI Web Manager
   * Pretty error pages
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Tue, 16 Jun 2020 02:39:30 +0200
 
-astroberry-server-wui (2.0.6) buster; urgency=medium
+astroberry-server-wui (2.0.6) bookworm; urgency=medium
 
   * Fix for post install/remove scripts
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Thu, 11 Jun 2020 23:21:20 +0200
 
-astroberry-server-wui (2.0.5) buster; urgency=medium
+astroberry-server-wui (2.0.5) bookworm; urgency=medium
 
   * Release version 2.0.2 (RPi 4B 8GB supported)
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Wed, 10 Jun 2020 00:56:48 +0200
 
-astroberry-server-wui (2.0.4) buster; urgency=medium
+astroberry-server-wui (2.0.4) bookworm; urgency=medium
 
   * Minor release
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Sat, 01 Feb 2020 13:05:31 +0100
 
-astroberry-server-wui (2.0.3) buster; urgency=medium
+astroberry-server-wui (2.0.3) bookworm; urgency=medium
 
   * Panels website added
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Mon, 02 Dec 2019 19:58:17 +0100
 
-astroberry-server-wui (2.0.2) buster; urgency=medium
+astroberry-server-wui (2.0.2) bookworm; urgency=medium
 
   * Updating Astro Panel and GPS Panel
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Sun, 01 Dec 2019 19:18:56 +0100
 
-astroberry-server-wui (2.0.1) buster; urgency=medium
+astroberry-server-wui (2.0.1) bookworm; urgency=medium
 
   * Fixing Astro Panel location order
 
  -- Radek Kaczorek <rkaczorek@gmail.com>  Sat, 23 Nov 2019 15:37:09 +0100
 
-astroberry-server-wui (2.0.0) buster; urgency=medium
+astroberry-server-wui (2.0.0) bookworm; urgency=medium
 
   * Initial release.
 
