@@ -1,0 +1,66 @@
+name: Build Debian Package
+
+on:
+  push:
+    branches:
+      - astroberry64-migration
+      - main
+  pull_request:
+    branches:
+      - astroberry64-migration
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: arm64
+
+    - name: Build package in Debian Bookworm arm64 container
+      run: |
+        docker run --rm --platform linux/arm64 \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace \
+          debian:bookworm-slim \
+          bash -c '
+            set -e
+            echo "Installing build dependencies..."
+            apt-get update
+            apt-get install -y debhelper devscripts cdbs cmake build-essential
+
+            echo "Building package..."
+            dpkg-buildpackage -b -us -uc
+
+            echo "Moving .deb files to build directory..."
+            mkdir -p /workspace/build
+            mv ../*.deb /workspace/build/ || true
+            mv ../*.buildinfo /workspace/build/ || true
+            mv ../*.changes /workspace/build/ || true
+
+            echo "Build artifacts:"
+            ls -lh /workspace/build/
+          '
+
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: debian-packages
+        path: build/*.deb
+        if-no-files-found: error
+
+    - name: Upload build info
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-info
+        path: |
+          build/*.buildinfo
+          build/*.changes
+        if-no-files-found: warn
