@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.8)
-PROJECT(astroberry6464-server-wui NONE)
+cmake_minimum_required(VERSION 3.25)
+PROJECT(astroberry64-server-wui NONE)
 
 set (VERSION_MAJOR 2)
 set (VERSION_MINOR 0)
