@@ -1,3 +1,10 @@
+astroberry64-server-wui (2.0.9-astroberry64.2) trixie; urgency=medium
+
+  * Migrate from Debian Bookworm to Trixie
+  * Target: Debian Trixie (13) for Raspberry Pi 4/5
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Mon, 07 Oct 2025 12:00:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.1) bookworm; urgency=medium
 
   * Initial Astroberry64 migration for 64-bit Raspberry Pi OS

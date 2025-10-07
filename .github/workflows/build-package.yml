@@ -24,12 +24,12 @@ jobs:
       with:
         platforms: arm64
 
-    - name: Build package in Debian Bookworm arm64 container
+    - name: Build package in Debian Trixie arm64 container
       run: |
         docker run --rm --platform linux/arm64 \
           -v ${{ github.workspace }}:/workspace \
           -w /workspace \
-          debian:bookworm-slim \
+          debian:trixie-slim \
           bash -c '
             set -e
             echo "Installing build dependencies..."
@@ -82,7 +82,7 @@ jobs:
         ./add-package.sh ${{ github.workspace }}/build/*.deb testing
 
         # Commit and push
-        git add dists/bookworm-testing pool
+        git add dists/trixie-testing pool
         git commit -m "Auto-add $(basename ${{ github.workspace }}/build/*.deb) to testing suite
 
 Built from ${{ github.repository }}@${{ github.sha }}
