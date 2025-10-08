@@ -1,3 +1,10 @@
+astroberry64-server-wui (2.0.9-astroberry64.9) trixie; urgency=medium
+
+  * Fix broken noVNC link on homepage (kanaka.github.io → novnc.com)
+  * Update project site link to github.com/astroberry64
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Wed, 09 Oct 2025 00:15:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.8) trixie; urgency=medium
 
   * Fix SyntaxError in gpspanel.py (remove invalid global declaration)
