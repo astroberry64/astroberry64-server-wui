@@ -28,17 +28,6 @@ if [ "$1" = "configure" ] && [ ! -d /var/log/astroberry ] && [ -n "$(cut -d: -f1
 	chown astroberry:adm /var/log/astroberry
 fi
 
-# add required python packages
-if [ "$1" = "configure" ] && [ -n "$(which pip3)" ] && [ -z "$(pip3 list | grep gps3)" ]; then
-	pip3 install --no-warn-script-location gps3
-fi
-if [ "$1" = "configure" ] && [ -n "$(which pip3)" ] && [ -z "$(pip3 list | grep python-socketio)" ]; then
-        pip3 install --no-warn-script-location python-socketio
-fi
-if [ "$1" = "configure" ] && [ -n "$(which pip3)" ] && [ -z "$(pip3 list | grep ephem)" ]; then
-        pip3 install --no-warn-script-location ephem
-fi
-
 # create symbolic links
 if [ "$1" = "configure" ] && [ ! -e /etc/nginx/sites-enabled/astroberry ] && [ -e /etc/nginx/sites-available/astroberry ]; then
 	ln -sf /etc/nginx/sites-available/astroberry /etc/nginx/sites-enabled/

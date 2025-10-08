@@ -21,7 +21,7 @@ Boston, MA 02110-1301, USA.
 
 DEBUG = False
 
-from gps3 import gps3
+import gps
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template
 from flask_socketio import SocketIO
@@ -220,22 +220,18 @@ def get_gps():
 	gps_start_time = datetime.datetime.utcnow()
 	status = 'Trying GPS'
 
-	gpsd_socket = gps3.GPSDSocket()
-	gpsd_socket.connect()
-	gpsd_socket.watch()
-	data_stream = gps3.DataStream()
+	gpsd_session = gps.gps(mode=gps.WATCH_ENABLE|gps.WATCH_NEWSTYLE)
 
-	for new_data in gpsd_socket:
+	for report in gpsd_session:
 		waiting_time = datetime.datetime.utcnow() - gps_start_time
 		if waiting_time > timeout:
 			raise gpsTimeout("GPS timeout")
-		if new_data:
-			data_stream.unpack(new_data)
-			if data_stream.TPV['lat'] != 'n/a' and int(data_stream.TPV['mode']) == 3:
-				gps_data.append(data_stream.TPV['lat'])
-				gps_data.append(data_stream.TPV['lon'])
-				gps_data.append(data_stream.TPV['alt'])
-				gps_data.append(data_stream.TPV['time'])
+		if gpsd_session.read() >= 0:
+			if gpsd_session.fix.mode == gps.MODE_3D:
+				gps_data.append(gpsd_session.fix.latitude)
+				gps_data.append(gpsd_session.fix.longitude)
+				gps_data.append(gpsd_session.fix.altitude)
+				gps_data.append(gpsd_session.fix.time)
 				break
 		else:
 			time.sleep(loop_time)
@@ -243,7 +239,7 @@ def get_gps():
 			status = status + '.'
 			print("%s" % status, end = '\r')
 
-	gpsd_socket.close()
+	gpsd_session.close()
 	return gps_data
 
 def get_location():

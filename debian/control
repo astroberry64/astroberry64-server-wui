@@ -9,7 +9,7 @@ Homepage: https://github.com/astroberry64
 
 Package: astroberry64-server-wui
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, nginx, websockify, x11vnc, python3-pip, python3-bottle, python3-flask, python3-flask-socketio, python3-gevent, python3-numpy, python3-pil, gpsd
+Depends: ${shlibs:Depends}, ${misc:Depends}, nginx, websockify, x11vnc, python3-bottle, python3-flask, python3-flask-socketio, python3-gevent, python3-numpy, python3-pil, python3-gps, python3-ephem, gpsd
 # Temporarily disabled until INDI packages are available:
 #   libindi1 (>= 1.7)
 #   libindi-data (>= 1.7)

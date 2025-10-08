@@ -1,3 +1,15 @@
+astroberry64-server-wui (2.0.9-astroberry64.7) trixie; urgency=medium
+
+  * Migrate from gps3 to modern gps module (python3-gps)
+  * Fix noVNC branding: Astroberry Server → Astroberry64 Server
+  * Replace pip3 installations with Debian packages
+  * Add python3-gps and python3-ephem to dependencies
+  * Remove python3-pip dependency (no longer needed)
+  * Fix gpspanel and astropanel services (now functional)
+  * PEP 668 compliance (no pip in externally-managed environment)
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Tue, 08 Oct 2025 20:30:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.6) trixie; urgency=medium
 
   * Update branding: Astroberry Server → Astroberry64 Server

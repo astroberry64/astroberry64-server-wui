@@ -17,7 +17,7 @@
 # the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gps3 import gps3
+import gps
 from gevent import monkey; monkey.patch_all()
 from flask import Flask, render_template
 from flask_socketio import SocketIO
@@ -32,6 +32,7 @@ __version__ = '2.0.0'
 app = Flask(__name__, static_folder='assets')
 socketio = SocketIO(app)
 thread = None
+gpsd_session = None
 
 
 # define colors for skymap
@@ -50,24 +51,24 @@ yellow = (255, 255, 0)
 orange = (255, 128, 0)
 
 def background_thread():
-	for new_data in gpsd_socket:
-		if new_data:
-			data_stream.unpack(new_data)
-			if isinstance(data_stream.TPV['mode'], int):
+	global gpsd_session
+	for report in gpsd_session:
+		if gpsd_session.read() >= 0:
+			if isinstance(gpsd_session.fix.mode, int):
 				socketio.emit('gpsdata', {
-				'mode': data_stream.TPV['mode'],
-				'latitude': data_stream.TPV['lat'],
-				'longitude': data_stream.TPV['lon'],
-				'gpstime': data_stream.TPV['time'],
-				'altitude': data_stream.TPV['alt']
+				'mode': gpsd_session.fix.mode,
+				'latitude': gpsd_session.fix.latitude,
+				'longitude': gpsd_session.fix.longitude,
+				'gpstime': gpsd_session.fix.time,
+				'altitude': gpsd_session.fix.altitude
 				})
-			if isinstance(data_stream.SKY['satellites'], list):
+			if isinstance(gpsd_session.satellites, list):
 				socketio.emit('gpsdata', {
-				'hdop': data_stream.SKY['hdop'],
-				'vdop': data_stream.SKY['vdop'],
-				'sschart': signal_strength(data_stream.SKY['satellites']),
-				'satellites': data_stream.SKY['satellites'],
-				'skymap': skymap(data_stream.SKY['satellites'])
+				'hdop': gpsd_session.hdop,
+				'vdop': gpsd_session.vdop,
+				'sschart': signal_strength(gpsd_session.satellites),
+				'satellites': gpsd_session.satellites,
+				'skymap': skymap(gpsd_session.satellites)
 				})
 		else:
 			time.sleep(0.1)
@@ -213,7 +214,7 @@ def skymap(satellites):
 	return imgdata_encoded
 
 def shut_down():
-    gpsd_socket.close()
+    gpsd_session.close()
     print('Keyboard interrupt received\nTerminated by user\nGood Bye.\n')
     sys.exit(1)
 
@@ -229,10 +230,8 @@ def handle_connect():
 		thread = socketio.start_background_task(target=background_thread)
 
 if __name__ == '__main__':
-	gpsd_socket = gps3.GPSDSocket()
-	gpsd_socket.connect()
-	gpsd_socket.watch()
-	data_stream = gps3.DataStream()
+	global gpsd_session
+	gpsd_session = gps.gps(mode=gps.WATCH_ENABLE|gps.WATCH_NEWSTYLE)
 
 	try:
 		socketio.run(app, host='0.0.0.0', port = 8625, debug=False)
