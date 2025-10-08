@@ -1,3 +1,11 @@
+astroberry64-server-wui (2.0.9-astroberry64.3) trixie; urgency=medium
+
+  * Temporarily remove INDI dependencies for infrastructure testing
+  * Comment out libindi1, libindi-data, indi-bin (not yet built for Trixie)
+  * Web interface will function with limited features until INDI is available
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Tue, 08 Oct 2025 17:30:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.2) trixie; urgency=medium
 
   * Migrate from Debian Bookworm to Trixie
