@@ -230,7 +230,6 @@ def handle_connect():
 		thread = socketio.start_background_task(target=background_thread)
 
 if __name__ == '__main__':
-	global gpsd_session
 	gpsd_session = gps.gps(mode=gps.WATCH_ENABLE|gps.WATCH_NEWSTYLE)
 
 	try:

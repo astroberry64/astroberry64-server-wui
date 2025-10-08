@@ -1,3 +1,10 @@
+astroberry64-server-wui (2.0.9-astroberry64.8) trixie; urgency=medium
+
+  * Fix SyntaxError in gpspanel.py (remove invalid global declaration)
+  * gpspanel service now starts correctly
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Tue, 08 Oct 2025 21:00:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.7) trixie; urgency=medium
 
   * Migrate from gps3 to modern gps module (python3-gps)
