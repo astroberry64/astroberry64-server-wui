@@ -1,3 +1,12 @@
+astroberry64-server-wui (2.0.9-astroberry64.4) trixie; urgency=medium
+
+  * Fix nginx SSL configuration for nginx 1.26 compatibility
+  * Remove deprecated 'ssl on;' directive
+  * Update listen directive to 'listen 443 ssl;'
+  * Update SSL protocols to TLSv1.2 and TLSv1.3 only
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Tue, 08 Oct 2025 18:00:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.3) trixie; urgency=medium
 
   * Temporarily remove INDI dependencies for infrastructure testing
