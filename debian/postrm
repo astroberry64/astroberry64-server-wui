@@ -29,6 +29,7 @@ fi
 
 if [ "$1" = "upgrade" ]
 then
+        systemctl restart x11vnc.service
         systemctl restart gpspanel.service
         systemctl restart astropanel.service
         systemctl restart indiwebmanager.service

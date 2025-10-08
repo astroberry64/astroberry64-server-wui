@@ -3,6 +3,7 @@
 
 if [ "$1" = "remove" -o "$1" = "purge" ]
 then
+        systemctl stop x11vnc.service && systemctl disable x11vnc.service
         systemctl stop gpspanel.service && systemctl disable gpspanel.service
         systemctl stop astropanel.service && systemctl disable astropanel.service
         systemctl stop indiwebmanager.service && systemctl disable indiwebmanager.service

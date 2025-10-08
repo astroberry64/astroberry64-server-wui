@@ -1,13 +1,24 @@
 #!/bin/bash
 # postinst script for astroberry64-server-wui
 
-# set password for VNC remote desktop
-if [ "$1" = "configure" ] && [ ! -e /root/.vnc/config.d/vncserver-x11 ] && [ -z "$(grep '^Password=ce77cd632e94ca19845f7deae77a1828$' /root/.vnc/config.d/vncserver-x11)" ]; then
-    echo "astroberry" | vncpasswd -service
-    echo "Authentication=VncAuth" >> /root/.vnc/config.d/vncserver-x11
+# set password for x11vnc remote desktop
+if [ "$1" = "configure" ] && [ ! -d /etc/x11vnc ]; then
+    mkdir -p /etc/x11vnc
 fi
-if [ "$1" = "configure" ] && [ ! -e /root/.vnc/config.d/vncserver-x11 ] && [ -z "$(grep 'Authentication=VncAuth' /root/.vnc/config.d/vncserver-x11)" ]; then
-    echo "Authentication=VncAuth" >> /root/.vnc/config.d/vncserver-x11
+if [ "$1" = "configure" ] && [ ! -e /etc/x11vnc/passwd ]; then
+    x11vnc -storepasswd astrober /etc/x11vnc/passwd
+fi
+
+# configure lightdm for X11 (required for VNC screen sharing)
+if [ "$1" = "configure" ] && [ -e /etc/lightdm/lightdm.conf ]; then
+    sed -i 's/^user-session=.*/user-session=rpd-x/' /etc/lightdm/lightdm.conf
+    sed -i 's/^autologin-session=.*/autologin-session=rpd-x/' /etc/lightdm/lightdm.conf
+fi
+
+# disable RealVNC if present (incompatible with noVNC)
+if [ "$1" = "configure" ] && [ -n "$(systemctl list-unit-files | grep vncserver-x11-serviced)" ]; then
+    systemctl stop vncserver-x11-serviced.service 2>/dev/null || true
+    systemctl disable vncserver-x11-serviced.service 2>/dev/null || true
 fi
 
 # set log directory access rights
@@ -52,7 +63,7 @@ if [ "$1" = "configure" ]; then
 	systemctl daemon-reload
 
 	# Activate basic services
-	systemctl enable vncserver-x11-serviced.service
+	systemctl enable x11vnc.service
 	systemctl enable gpspanel.service
 	systemctl enable astropanel.service
 	systemctl enable indiwebmanager.service
@@ -60,7 +71,7 @@ if [ "$1" = "configure" ]; then
 	systemctl enable nginx.service
 
 	# Reload astroberry services
-	systemctl restart vncserver-x11-serviced.service
+	systemctl restart x11vnc.service
 	systemctl restart gpspanel.service
 	systemctl restart astropanel.service
 	systemctl restart indiwebmanager.service

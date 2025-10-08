@@ -1,3 +1,13 @@
+astroberry64-server-wui (2.0.9-astroberry64.5) trixie; urgency=medium
+
+  * Replace RealVNC Server with x11vnc for noVNC compatibility
+  * RealVNC proprietary protocol incompatible with web-based noVNC client
+  * Configure lightdm for X11 (Wayland incompatible with VNC screen sharing)
+  * Set VNC password to 'astrober' (8-character VNC protocol limit)
+  * Web-based desktop access now functional for field astronomy use
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Tue, 08 Oct 2025 19:30:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.4) trixie; urgency=medium
 
   * Fix nginx SSL configuration for nginx 1.26 compatibility
