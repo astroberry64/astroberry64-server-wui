@@ -32,6 +32,8 @@ jobs:
           debian:trixie-slim \
           bash -c '
             set -e
+            export DEBIAN_FRONTEND=noninteractive
+
             echo "Installing build dependencies..."
             apt-get update
             apt-get install -y debhelper devscripts cdbs cmake build-essential
