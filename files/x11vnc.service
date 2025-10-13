@@ -4,7 +4,7 @@ After=display-manager.service network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/x11vnc -display :0 -auth /var/run/lightdm/root/:0 -rfbauth /etc/x11vnc/passwd -forever -shared -rfbport 5900
+ExecStart=/usr/bin/x11vnc -display :0 -auth /var/run/lightdm/root/:0 -rfbauth /etc/x11vnc/passwd -forever -shared -rfbport 5900 -xrandr resize
 Restart=on-failure
 RestartSec=5
 
