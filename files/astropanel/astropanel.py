@@ -22,10 +22,12 @@ Boston, MA 02110-1301, USA.
 DEBUG = False
 
 import gps
-from gevent import monkey; monkey.patch_all()
-from flask import Flask, render_template
+from gevent import monkey
+monkey.patch_all(subprocess=True)
+from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO
 import sys, os, configparser, re, ephem, numpy, datetime, time
+from gevent import subprocess
 
 __author__ = 'Radek Kaczorek'
 __copyright__ = 'Copyright 2019, Radek Kaczorek'
@@ -389,6 +391,41 @@ def shut_down():
 @app.route('/')
 def main():
 	return render_template('main.html')
+
+@app.route('/api/resolution', methods=['GET'])
+def get_resolution():
+	try:
+		result = subprocess.run(['sudo', '-u', 'astroberry', 'env', 'DISPLAY=:0', 'xrandr'], capture_output=True, text=True, timeout=5)
+		for line in result.stdout.split('\n'):
+			if 'current' in line:
+				# Extract resolution from line like: "Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 8192 x 8192"
+				parts = line.split('current')[1].split(',')[0].strip().replace(' ', '')
+				return jsonify({'resolution': parts, 'success': True})
+		return jsonify({'resolution': 'Unknown', 'success': False})
+	except Exception as e:
+		return jsonify({'resolution': 'Error', 'success': False, 'error': str(e)})
+
+@app.route('/api/resolution', methods=['POST'])
+def set_resolution():
+	try:
+		data = request.get_json()
+		resolution = data.get('resolution', '')
+
+		# Validate resolution format (e.g., "1920x1080")
+		if not re.match(r'^\d+x\d+$', resolution):
+			return jsonify({'success': False, 'error': 'Invalid resolution format'})
+
+		# Run xrandr command in background (don't wait for it)
+		subprocess.Popen(
+			['sudo', '-u', 'astroberry', 'env', 'DISPLAY=:0', 'xrandr', '--fb', resolution],
+			stdout=subprocess.DEVNULL,
+			stderr=subprocess.DEVNULL
+		)
+
+		# Return immediately - resolution will change in background
+		return jsonify({'success': True, 'resolution': resolution})
+	except Exception as e:
+		return jsonify({'success': False, 'error': str(e)})
 
 @socketio.on('connect')
 def handle_connect():

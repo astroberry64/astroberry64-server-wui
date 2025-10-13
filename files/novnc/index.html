@@ -210,6 +210,18 @@
                             <option value="remote">Remote Resizing</option>
                         </select>
                     </li>
+                    <li>
+                        <label for="noVNC_setting_resolution">Desktop Resolution:</label>
+                        <select id="noVNC_setting_resolution">
+                            <option value="1920x1080">1920x1080 (Full HD)</option>
+                            <option value="2560x1440">2560x1440 (2K)</option>
+                            <option value="3840x2160">3840x2160 (4K)</option>
+                        </select>
+                        <input type="button" id="noVNC_apply_resolution_button" value="Apply" class="noVNC_submit" />
+                    </li>
+                    <li>
+                        <span id="noVNC_resolution_status" style="font-size: 0.9em; color: #aaa;">Current: Loading...</span>
+                    </li>
                     <li><hr></li>
                     <li>
                         <div class="noVNC_expander">Advanced</div>
@@ -369,5 +381,66 @@
 		}
 	});
 	xmlhttp.send();
+
+	// Resolution management
+	function getCurrentResolution() {
+		fetch('/api/resolution')
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					document.getElementById('noVNC_resolution_status').textContent = 'Current: ' + data.resolution;
+					// Select current resolution in dropdown if it matches
+					var dropdown = document.getElementById('noVNC_setting_resolution');
+					for (var i = 0; i < dropdown.options.length; i++) {
+						if (dropdown.options[i].value === data.resolution) {
+							dropdown.selectedIndex = i;
+							break;
+						}
+					}
+				}
+			})
+			.catch(err => {
+				document.getElementById('noVNC_resolution_status').textContent = 'Current: Unknown';
+			});
+	}
+
+	function setResolution() {
+		var resolution = document.getElementById('noVNC_setting_resolution').value;
+		document.getElementById('noVNC_resolution_status').textContent = 'Changing to ' + resolution + '...';
+
+		fetch('/api/resolution', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({resolution: resolution})
+		})
+		.then(response => response.json())
+		.then(data => {
+			if (data.success) {
+				document.getElementById('noVNC_resolution_status').textContent = 'Current: ' + data.resolution;
+				document.getElementById('noVNC_resolution_status').style.color = '#99cc00';
+				setTimeout(() => {
+					document.getElementById('noVNC_resolution_status').style.color = '#aaa';
+				}, 2000);
+			} else {
+				document.getElementById('noVNC_resolution_status').textContent = 'Error: ' + (data.error || 'Failed');
+				document.getElementById('noVNC_resolution_status').style.color = '#ff3333';
+			}
+		})
+		.catch(err => {
+			document.getElementById('noVNC_resolution_status').textContent = 'Error: ' + err.message;
+			document.getElementById('noVNC_resolution_status').style.color = '#ff3333';
+		});
+	}
+
+	// Load current resolution on page load
+	window.addEventListener('load', getCurrentResolution);
+
+	// Attach event handler to Apply button (needs to wait for DOM)
+	window.addEventListener('load', function() {
+		var applyBtn = document.getElementById('noVNC_apply_resolution_button');
+		if (applyBtn) {
+			applyBtn.addEventListener('click', setResolution);
+		}
+	});
 </script>
 </html>

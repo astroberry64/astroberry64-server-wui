@@ -1,0 +1,3 @@
+# Allow astropanel service (running as nobody) to run xrandr as astroberry user
+# This is needed for the noVNC resolution switcher
+nobody ALL=(astroberry) NOPASSWD: /usr/bin/env
