@@ -1,3 +1,16 @@
+astroberry64-server-wui (2.0.9-astroberry64.10) trixie; urgency=medium
+
+  * Add multi-resolution support for remote desktop access
+  * Add noVNC resolution switcher (1920x1080, 2560x1440, 3840x2160)
+  * Add resolution API to astropanel (GET/POST /api/resolution)
+  * Add dispsetup.sh for custom xrandr modes at X server startup
+  * Configure lightdm display-setup-script for automatic resolution setup
+  * Support both noVNC and RustDesk with same resolution system
+  * Default resolution: 1920x1080 (stored in /etc/astroberry-resolution)
+  * Dynamic resolution switching without reboot via xrandr --fb
+
+ -- Astroberry64 Team <astroberry64@speckle.red>  Mon, 14 Oct 2025 21:00:00 +0200
+
 astroberry64-server-wui (2.0.9-astroberry64.9) trixie; urgency=medium
 
   * Fix broken noVNC link on homepage (kanaka.github.io → novnc.com)

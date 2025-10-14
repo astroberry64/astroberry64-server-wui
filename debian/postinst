@@ -15,6 +15,17 @@ if [ "$1" = "configure" ] && [ -e /etc/lightdm/lightdm.conf ]; then
     sed -i 's/^autologin-session=.*/autologin-session=rpd-x/' /etc/lightdm/lightdm.conf
 fi
 
+# configure lightdm display-setup-script for custom resolutions
+if [ "$1" = "configure" ] && [ -e /etc/lightdm/lightdm.conf ]; then
+    if [ -z "$(grep '^display-setup-script=/usr/share/dispsetup.sh' /etc/lightdm/lightdm.conf)" ]; then
+        sed -i 's/^#display-setup-script=.*/display-setup-script=\/usr\/share\/dispsetup.sh/' /etc/lightdm/lightdm.conf
+        # If no commented line exists, add it to the [Seat:*] section
+        if [ -z "$(grep '^display-setup-script=' /etc/lightdm/lightdm.conf)" ]; then
+            sed -i '/^\[Seat:\*\]/a display-setup-script=/usr/share/dispsetup.sh' /etc/lightdm/lightdm.conf
+        fi
+    fi
+fi
+
 # disable RealVNC if present (incompatible with noVNC)
 if [ "$1" = "configure" ] && [ -n "$(systemctl list-unit-files | grep vncserver-x11-serviced)" ]; then
     systemctl stop vncserver-x11-serviced.service 2>/dev/null || true
