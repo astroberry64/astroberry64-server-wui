@@ -36,9 +36,65 @@ jobs:
 
             echo "Installing build dependencies..."
             apt-get update
-            apt-get install -y debhelper devscripts cdbs cmake build-essential
+            apt-get install -y debhelper devscripts cdbs cmake build-essential curl
 
-            echo "Building package..."
+            echo "=== Auto-incrementing build number ==="
+
+            # Get package name from debian/control
+            PACKAGE_NAME=$(grep "^Package:" debian/control | head -1 | awk "{print \$2}")
+            echo "Package: $PACKAGE_NAME"
+
+            # Get current version from debian/changelog (handles both formats)
+            CURRENT_FULL_VERSION=$(dpkg-parsechangelog -S Version)
+            echo "Current version in git: $CURRENT_FULL_VERSION"
+
+            # Extract upstream version (works with "2.0.9" OR "2.0.9-astroberry64.10")
+            CURRENT_UPSTREAM=$(echo "$CURRENT_FULL_VERSION" | sed "s/-astroberry64\..*//")
+            echo "Upstream version: $CURRENT_UPSTREAM"
+
+            # Fetch latest version from astroberry64-repo
+            LATEST_REPO_VERSION=$(curl -s "https://astroberry64.github.io/astroberry64-repo/dists/trixie-testing/main/binary-arm64/Packages.gz" | \
+              gunzip | \
+              awk "/^Package: ${PACKAGE_NAME}\$/,/^Version:/" | \
+              grep "^Version:" | \
+              head -1 | \
+              awk "{print \$2}")
+
+            if [ -z "$LATEST_REPO_VERSION" ]; then
+              echo "No previous version found in repo, starting at .1"
+              NEW_BUILD=1
+            else
+              echo "Latest in repo: $LATEST_REPO_VERSION"
+
+              # Parse repo version parts
+              REPO_UPSTREAM=$(echo "$LATEST_REPO_VERSION" | sed "s/-astroberry64\..*//")
+              REPO_BUILD=$(echo "$LATEST_REPO_VERSION" | grep -oP "astroberry64\.\K\d+" || echo "0")
+
+              # Compare upstream versions
+              if [ "$CURRENT_UPSTREAM" != "$REPO_UPSTREAM" ]; then
+                echo "Upstream version changed ($REPO_UPSTREAM → $CURRENT_UPSTREAM), resetting build to .1"
+                NEW_BUILD=1
+              else
+                echo "Upstream version unchanged, incrementing build number"
+                NEW_BUILD=$((REPO_BUILD + 1))
+              fi
+            fi
+
+            # Create new version string
+            NEW_VERSION="${CURRENT_UPSTREAM}-astroberry64.${NEW_BUILD}"
+            echo "New version: $NEW_VERSION"
+
+            # Update debian/changelog (in CI only, not committed back to git)
+            export DEBFULLNAME="Astroberry64 CI"
+            export DEBEMAIL="ci@astroberry64.github.io"
+            dch -b -v "$NEW_VERSION" "Automated build #${NEW_BUILD} from CI"
+
+            echo ""
+            echo "Updated debian/changelog (CI ephemeral):"
+            head -5 debian/changelog
+            echo ""
+
+            echo "=== Building package ==="
             dpkg-buildpackage -b -us -uc
 
             echo "Moving .deb files to build directory..."
